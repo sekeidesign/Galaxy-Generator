@@ -8,8 +8,6 @@ import { GraphCursor } from '@tweakpane/core/dist/cjs/monitor-binding/number/mod
 /**
  * Base
  */
-// Debug
-const gui = new Pane({ title: 'Galaxy Generator Controls' });
 
 // Canvas
 const canvas = document.querySelector('canvas.webgl');
@@ -99,6 +97,14 @@ generateGalaxy();
 // Debug
 const monitor = {};
 monitor.fps = 0;
+
+const isMobile = window.innerWidth < 678;
+console.log(isMobile);
+
+const gui = new Pane({
+  title: 'Galaxy Generator Controls',
+  expanded: !isMobile,
+});
 
 const particleControls = gui.addFolder({
   title: 'Particles',
@@ -240,6 +246,8 @@ const tick = () => {
 
   // Update controls
   controls.update();
+
+  monitor.windowWidth = window.innerWidth;
 
   // Rotate galaxy
   galaxyGroup.rotation.y += 0.001;
