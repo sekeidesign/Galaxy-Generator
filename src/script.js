@@ -22,7 +22,7 @@ const scene = new THREE.Scene();
  */
 const params = {};
 params.count = 50000;
-params.size = 0.015;
+params.size = 0.01;
 params.radius = 5;
 params.branches = 3;
 params.spin = 1;
@@ -112,6 +112,10 @@ const colorControls = gui.addFolder({
 const performanceMonitor = gui.addFolder({
   title: 'Performance monitor',
 });
+const github = gui.addFolder({
+  title: 'Github',
+  expanded: false,
+});
 
 particleControls.addInput(params, 'count', {
   label: 'Count',
@@ -125,6 +129,7 @@ particleControls.addInput(params, 'size', {
   max: 0.1,
   step: 0.001,
 });
+
 galaxyControls.addInput(params, 'radius', {
   label: 'Radius',
   min: 0.01,
@@ -155,13 +160,21 @@ galaxyControls.addInput(params, 'falloff', {
   max: 10,
   step: 0.25,
 });
+
 colorControls.addInput(params, 'insideColor', { label: 'Inner color' });
 colorControls.addInput(params, 'outsideColor', { label: 'Outer color' });
+
 performanceMonitor.addMonitor(monitor, 'fps', { label: 'FPS' });
 performanceMonitor.addMonitor(monitor, 'fps', {
   label: 'Graph',
   view: 'graph',
 });
+
+const ghButton = github.addButton({ title: 'Visit the repo' });
+ghButton.on('click', () => {
+  window.open('https://github.com/sekeidesign/Galaxy-Generator', '_blank');
+});
+
 gui.on('change', (ev) => {
   generateGalaxy();
 });
@@ -199,8 +212,8 @@ const camera = new THREE.PerspectiveCamera(
   100
 );
 camera.position.x = 3;
-camera.position.y = 2;
-camera.position.z = 6;
+camera.position.y = 1.5;
+camera.position.z = 7;
 scene.add(camera);
 
 // Controls
