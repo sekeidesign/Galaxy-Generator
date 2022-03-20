@@ -4,6 +4,16 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { Pane } from 'tweakpane';
 import { AdditiveBlending } from 'three';
 import { GraphCursor } from '@tweakpane/core/dist/cjs/monitor-binding/number/model/graph-cursor';
+import { gsap } from 'gsap';
+import SplitType from 'split-type';
+
+const galaxyGroup = new THREE.Group();
+const galaxyGroupScrollContainer = new THREE.Group();
+
+document.addEventListener('DOMContentLoaded', () => {
+  const main = document.querySelector('.main-text');
+  main.style = 'opacity: 1;';
+});
 
 /**
  * Base
@@ -19,19 +29,18 @@ const scene = new THREE.Scene();
  * Galaxy
  */
 const params = {};
-params.count = 50000;
-params.size = 0.01;
+params.count = 85000;
+params.size = 0.012;
 params.radius = 5;
 params.branches = 3;
 params.spin = 1;
 params.randomness = 0.2;
 params.falloff = 1.5;
-params.insideColor = '#ff6030';
-params.outsideColor = '#003f7c';
+params.insideColor = '#8630ff';
+params.outsideColor = '#004c0b';
 let geometry = null;
 let material = null;
 let points = null;
-const galaxyGroup = new THREE.Group();
 
 const generateGalaxy = () => {
   if (points !== null) {
@@ -90,7 +99,8 @@ const generateGalaxy = () => {
   points = new THREE.Points(geometry, material);
 
   galaxyGroup.add(points);
-  scene.add(galaxyGroup);
+  galaxyGroupScrollContainer.add(galaxyGroup);
+  scene.add(galaxyGroupScrollContainer);
 };
 generateGalaxy();
 
@@ -103,7 +113,7 @@ console.log(isMobile);
 
 const gui = new Pane({
   title: 'Galaxy Generator Controls',
-  expanded: !isMobile,
+  expanded: false,
 });
 
 const particleControls = gui.addFolder({
@@ -207,6 +217,15 @@ window.addEventListener('resize', () => {
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 });
 
+const cursor = {
+  x: 0,
+  y: 0,
+};
+window.addEventListener('mousemove', (e) => {
+  cursor.x = e.clientX / sizes.width - 0.5;
+  cursor.y = e.clientY / sizes.height - 0.5;
+});
+
 /**
  * Camera
  */
@@ -215,22 +234,26 @@ const camera = new THREE.PerspectiveCamera(
   75,
   sizes.width / sizes.height,
   0.1,
-  100
+  1000
 );
+
+const centre = new THREE.Vector3(0, -2, 0);
 camera.position.x = 3;
 camera.position.y = 1.5;
 camera.position.z = 7;
+camera.lookAt(centre);
 scene.add(camera);
 
 // Controls
-const controls = new OrbitControls(camera, canvas);
-controls.enableDamping = true;
+// const controls = new OrbitControls(camera, canvas);
+// controls.enableDamping = true;
 
 /**
  * Renderer
  */
 const renderer = new THREE.WebGLRenderer({
   canvas: canvas,
+  alpha: true,
 });
 renderer.setSize(sizes.width, sizes.height);
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
@@ -241,16 +264,94 @@ renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 const clock = new THREE.Clock();
 const times = [];
 
+const splitTitle = new SplitType('.main-heading', { type: 'words' });
+const splitText = new SplitType('.sub-text', { type: 'words' });
+const splitIntro = new SplitType('#intro-text', { type: 'words' });
+const line = document.querySelectorAll('.line');
+line.forEach((element) => {
+  element.style = 'overflow: hidden;';
+});
+splitTitle.lines[1].classList.add('is-a');
+const tl = gsap.timeline();
+tl.from(splitIntro.words, {
+  ease: 'power2.out',
+  opacity: 0,
+  y: 80,
+  duration: 0.85,
+  stagger: { amount: 0.4 },
+});
+tl.to(
+  splitIntro.words,
+  {
+    ease: 'power2.in',
+    opacity: 0,
+    y: -80,
+    duration: 0.85,
+    stagger: { amount: 0.4 },
+  },
+  '>0.5'
+);
+tl.to(
+  galaxyGroupScrollContainer.position,
+  {
+    x: 5,
+    duration: 4,
+    ease: 'power3.inOut',
+  },
+  '<-0.5'
+);
+tl.from(
+  camera.position,
+  {
+    y: 5,
+    z: -3,
+    duration: 4,
+    ease: 'power2.inOut',
+  },
+  '<'
+);
+tl.from(
+  splitTitle.words,
+  {
+    ease: 'expo.out',
+    opacity: 1,
+    y: 180,
+    duration: 1,
+    stagger: { amount: 0.3 },
+  },
+  '<1.8'
+);
+tl.from(
+  splitText.words,
+  {
+    ease: 'power2.inOut',
+    opacity: 1,
+    y: 104,
+    duration: 1.5,
+    stagger: { amount: 0.3 },
+  },
+  '<'
+);
+
 const tick = () => {
   const elapsedTime = clock.getElapsedTime();
 
   // Update controls
-  controls.update();
+  //controls.update();
 
   monitor.windowWidth = window.innerWidth;
 
   // Rotate galaxy
   galaxyGroup.rotation.y += 0.001;
+
+  gsap.to(galaxyGroupScrollContainer.rotation, {
+    z: 0.2 + -cursor.x * 0.25,
+    duration: 1,
+  });
+  gsap.to(galaxyGroupScrollContainer.rotation, {
+    x: cursor.y * 0.25,
+    duration: 1,
+  });
 
   // Render
   renderer.render(scene, camera);
