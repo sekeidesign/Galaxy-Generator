@@ -1,19 +1,149 @@
-*
-{
-    margin: 0;
-    padding: 0;
+/*
+  1. Use a more-intuitive box-sizing model.
+*/
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+/*
+  2. Remove default margin
+*/
+* {
+  margin: 0;
+}
+/*
+  3. Allow percentage-based heights in the application
+*/
+html,
+body {
+  height: 100%;
+}
+/*
+  Typographic tweaks!
+  4. Add accessible line-height
+  5. Improve text rendering
+*/
+body {
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+/*
+  6. Improve media defaults
+*/
+img,
+picture,
+video,
+canvas,
+svg {
+  display: block;
+  max-width: 100%;
+}
+/*
+  7. Remove built-in form typography styles
+*/
+input,
+button,
+textarea,
+select {
+  font: inherit;
+}
+/*
+  8. Avoid text overflows
+*/
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  overflow-wrap: break-word;
+}
+/*
+  9. Create a root stacking context
+*/
+#root,
+#__next {
+  isolation: isolate;
+}
+
+* {
+  margin: 0;
+  padding: 0;
 }
 
 html,
-body
-{
-    overflow: hidden;
+body {
+  overflow: hidden;
+  background-color: #191b1f;
 }
 
-.webgl
-{
-    position: fixed;
-    top: 0;
-    left: 0;
-    outline: none;
+@font-face {
+  font-family: 'Briar';
+  src: url('./assets/fonts/BriarDisplay.woff') format('woff');
+}
+
+.webgl {
+  position: fixed;
+  top: 0;
+  left: 0;
+  outline: none;
+  z-index: 1;
+}
+
+.center-text {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: Briar;
+  color: #e1e7ec;
+  z-index: 2;
+}
+
+.main-text {
+  opacity: 0;
+  position: relative;
+  z-index: 2;
+  color: #e1e7ec;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: start;
+  width: 100vw;
+  max-width: 1500px;
+  margin: auto;
+  padding: 3rem;
+}
+
+.main-heading {
+  font-family: Briar;
+  font-size: 10rem;
+  line-height: 9rem;
+}
+
+.is-a {
+  display: flex;
+  justify-content: space-between;
+  padding-left: 2ch;
+}
+
+.sub-text {
+  font-weight: 300;
+  max-width: 30ch;
+  font-size: 2rem;
+  line-height: 3rem;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
+    Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  opacity: 0.75;
+}
+
+.tp-dfwv {
+  z-index: 3 !important;
 }
