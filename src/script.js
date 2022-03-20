@@ -346,11 +346,11 @@ const tick = () => {
 
   gsap.to(galaxyGroupScrollContainer.rotation, {
     z: 0.2 + -cursor.x * 0.25,
-    duration: 1,
+    duration: 3,
   });
   gsap.to(galaxyGroupScrollContainer.rotation, {
     x: cursor.y * 0.25,
-    duration: 1,
+    duration: 3,
   });
 
   // Render
